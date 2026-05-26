@@ -111,7 +111,6 @@
         .hide-input { display: none; }
         .center-circle { border-radius: 50%; }
 
-        /* 슬롯 좌표 설정 */
         .main-char-1 { top: 22.5%; left: 5.5%; width: 14.5%; height: 33.5%; border-radius: 4px; }
         .main-char-2 { top: 22.5%; left: 22.5%; width: 14.5%; height: 33.5%; border-radius: 4px; }
         .profile-char { top: 24.8%; left: 40.5%; width: 19.2%; height: 34.2%; }
@@ -119,7 +118,7 @@
         .favorite-char-2 { top: 62%; left: 80.5%; width: 14.5%; height: 33.5%; border-radius: 4px; }
 
         /* =========================================
-           인풋 래퍼 및 가독성 최적화 스타일 (그림자 및 테두리 효과)
+           인풋 래퍼 및 가독성 최적화 컴포넌트
            ========================================= */
         .input-wrapper {
             position: absolute;
@@ -128,7 +127,7 @@
             align-items: center;
         }
 
-        /* 폰트 기본 서식 및 찐한 그림자/테두리(Text-stroke 대용) 효과 적용 */
+        /* 자유 입력 텍스트 서식 정의 */
         .transparent-input {
             width: 100%;
             height: 100%;
@@ -141,26 +140,10 @@
             padding: 2px 4px;
             box-sizing: border-box;
             color: #ffffff;
-            /* 글씨 겉에 얇고 선명한 검은색 외곽선 + 부드러운 그림자 조합으로 가독성 극대화 */
-            text-shadow: 
-                -1.5px -1.5px 0 #000,  
-                 1.5px -1.5px 0 #000,
-                -1.5px  1.5px 0 #000,
-                 1.5px  1.5px 0 #000,
-                 0px 2px 5px rgba(0, 0, 0, 0.9);
+            text-shadow: -1.5px -1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px 1.5px 0 #000, 0px 2px 4px rgba(0,0,0,0.8);
         }
-        .transparent-input:focus {
-            background-color: rgba(255, 255, 255, 0.15);
-            border-radius: 4px;
-        }
-        .transparent-input::placeholder { 
-            color: rgba(255, 255, 255, 0.6); 
-            font-weight: 500; 
-            font-size: 12px; 
-            text-shadow: 0px 1px 3px rgba(0,0,0,0.8);
-        }
+        .transparent-input::placeholder { color: rgba(255, 255, 255, 0.5); text-shadow: none; font-weight: 500; font-size: 12px; }
 
-        /* 캡처용 미러링 디브에도 동일한 가독성 효과 부여 */
         .capture-text-mirror {
             display: none;
             width: 100%;
@@ -172,43 +155,70 @@
             word-break: break-all;
             box-sizing: border-box;
             color: #ffffff;
-            text-shadow: 
-                -1.5px -1.5px 0 #000,  
-                 1.5px -1.5px 0 #000,
-                -1.5px  1.5px 0 #000,
-                 1.5px  1.5px 0 #000,
-                 0px 2px 5px rgba(0, 0, 0, 0.9);
+            text-shadow: -1.5px -1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px 1.5px 0 #000, 0px 2px 4px rgba(0,0,0,0.8);
         }
 
-        /* 다운로드 시 노드 스위칭 */
         .capturing .transparent-input { display: none !important; }
         .capturing .capture-text-mirror { display: block !important; }
 
-        /* 각 영역별 상세 위치 설정 */
-        .pos-ingame-mode { top: 68.2%; left: 13.5%; width: 15.5%; }
+        /* =========================================
+           붉은 박스 토글 선택지 영역 공통 스타일
+           ========================================= */
+        .clickable-box-group {
+            position: absolute;
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            box-sizing: border-box;
+        }
+        .clickable-item {
+            font-family: 'Paperlogy', sans-serif;
+            font-weight: 700;
+            font-size: 11.5px;
+            color: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            padding: 2px 5px;
+            border-radius: 4px;
+            transition: all 0.15s ease;
+            user-select: none;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+        }
+        /* 선택 시 강렬한 흰색 하이라이트 + 강조 이펙트 */
+        .clickable-item.active {
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.15);
+            text-shadow: -1.5px -1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px 1.5px 0 #000, 0px 0px 8px rgba(255,255,255,0.6);
+        }
+        
+        /* 다운로드(캡처) 중일 때 비활성화된 선택지는 투명하게 숨김 처리 */
+        .capturing .clickable-item { display: none !important; }
+        .capturing .clickable-item.active { display: block !important; background-color: transparent !important; padding: 2px 0; }
+
+        /* 절대 좌표 맵핑 구역 */
+        .pos-ingame-mode { top: 68.2%; left: 13.5%; width: 16.5%; }
         .pos-ingame-name { top: 74.8%; left: 13.5%; width: 15.5%; }
-        .pos-ingame-discord { top: 81.3%; left: 13.5%; width: 15.5%; }
-        .pos-ingame-tier { top: 88.0%; left: 13.5%; width: 15.5%; }
+        .pos-ingame-discord { top: 81.3%; left: 13.5%; width: 16.5%; }
+        
+        /* 티어 스위칭 레이아웃 전용 프로퍼티 */
+        .pos-ingame-tier { top: 87.8%; left: 13.5%; width: 15.5%; height: 24px; }
+        .tier-select-btn {
+            width: 100%; height: 100%; text-align: left; background: transparent; border: none;
+            color: #fff; font-family: 'Paperlogy', sans-serif; font-weight: 700; font-size: 13px;
+            cursor: pointer; padding: 2px 4px;
+            text-shadow: -1.5px -1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px 1.5px 0 #000;
+        }
 
-        /* 중앙 상단 닉네임 구역 */
         .pos-center-name { top: 22.0%; left: 43.0%; width: 14.0%; justify-content: center; }
-        .pos-center-name .transparent-input, .pos-center-name .capture-text-mirror { 
-            text-align: center; 
-            font-size: 15px; 
-        }
+        .pos-center-name .transparent-input, .pos-center-name .capture-text-mirror { text-align: center; font-size: 14.5px; }
         
-        .pos-gender-age { top: 61.8%; left: 45.0%; width: 13.0%; justify-content: center; }
-        .pos-gender-age .transparent-input, .pos-gender-age .capture-text-mirror { text-align: center; }
+        /* 성별 / 나이 레이아웃 */
+        .pos-gender-select { top: 61.6%; left: 46.5%; width: 12.0%; }
+        .pos-age-select { top: 64.9%; left: 46.5%; width: 12.0%; }
         
-        /* 한마디/소개글 구역 (Textarea 세로 정렬 대응) */
         .pos-free-text { top: 79.5%; left: 37.5%; width: 25.0%; height: 13.5%; align-items: flex-start; }
-        .pos-free-text .transparent-input, .pos-free-text .capture-text-mirror { 
-            font-weight: 600; 
-            font-size: 12.5px; 
-            text-align: left; 
-            resize: none;
-        }
+        .pos-free-text .transparent-input, .pos-free-text .capture-text-mirror { font-weight: 600; font-size: 12.5px; text-align: left; resize: none; }
 
+        /* 성향 그룹 레이아웃 */
         .pos-type-tweet { top: 28.3%; left: 76.5%; width: 18.0%; }
         .pos-type-block { top: 35.3%; left: 76.5%; width: 18.0%; }
         .pos-type-time { top: 42.3%; left: 76.5%; width: 18.0%; }
@@ -263,44 +273,63 @@
                 <input type="file" id="upload-fav-2" accept="image/*" class="hide-input" onchange="previewImg(this, 'img-fav-2')">
             </div>
 
-            <div class="input-wrapper pos-ingame-mode">
-                <input type="text" class="transparent-input" placeholder="일반 / 랭크 / 코발트 / 내전">
-                <div class="capture-text-mirror"></div>
+            <div class="clickable-box-group pos-ingame-mode" data-type="single">
+                <span class="clickable-item" onclick="toggleSelect(this)">일반</span>
+                <span class="clickable-item" onclick="toggleSelect(this)">랭크</span>
+                <span class="clickable-item" onclick="toggleSelect(this)">코발트</span>
+                <span class="clickable-item" onclick="toggleSelect(this)">내전</span>
             </div>
+
             <div class="input-wrapper pos-ingame-name">
                 <input type="text" class="transparent-input" placeholder="인게임 닉네임">
                 <div class="capture-text-mirror"></div>
             </div>
-            <div class="input-wrapper pos-ingame-discord">
-                <input type="text" class="transparent-input" placeholder="듣기 / 말하기 / 전부 / 사용X">
-                <div class="capture-text-mirror"></div>
+
+            <div class="clickable-box-group pos-ingame-discord" data-type="single">
+                <span class="clickable-item" onclick="toggleSelect(this)">듣기</span>
+                <span class="clickable-item" onclick="toggleSelect(this)">말하기</span>
+                <span class="clickable-item" onclick="toggleSelect(this)">전부O</span>
+                <span class="clickable-item" onclick="toggleSelect(this)">사용X</span>
             </div>
+
             <div class="input-wrapper pos-ingame-tier">
-                <input type="text" class="transparent-input" placeholder="현재 티어">
-                <div class="capture-text-mirror"></div>
+                <button type="button" class="tier-select-btn" id="tier-display" onclick="rotateTier()">티어 선택</button>
+                <div class="capture-text-mirror" id="tier-mirror"></div>
             </div>
 
             <div class="input-wrapper pos-center-name">
                 <input type="text" class="transparent-input" placeholder="트위터 닉네임">
                 <div class="capture-text-mirror"></div>
             </div>
-            <div class="input-wrapper pos-gender-age">
-                <input type="text" class="transparent-input" placeholder="성별 / 나이">
-                <div class="capture-text-mirror"></div>
+
+            <div class="clickable-box-group pos-gender-select" data-type="single">
+                <span class="clickable-item" onclick="toggleSelect(this)">여성</span>
+                <span class="clickable-item" onclick="toggleSelect(this)">남성</span>
+                <span class="clickable-item" onclick="toggleSelect(this)">비공개</span>
             </div>
+            <div class="clickable-box-group pos-age-select" data-type="single">
+                <span class="clickable-item" onclick="toggleSelect(this)">성인</span>
+                <span class="clickable-item" onclick="toggleSelect(this)">청소년</span>
+                <span class="clickable-item" onclick="toggleSelect(this)">비공개</span>
+            </div>
+
             <div class="input-wrapper pos-free-text">
                 <textarea class="transparent-input" placeholder="소개글이나 작업 성향 등을 자유롭게 작성하세요."></textarea>
                 <div class="capture-text-mirror"></div>
             </div>
 
-            <div class="input-wrapper pos-type-tweet">
-                <input type="text" class="transparent-input" placeholder="연성 / 소비 / 흔적 / 일상">
-                <div class="capture-text-mirror"></div>
+            <div class="clickable-box-group pos-type-tweet" data-type="multi">
+                <span class="clickable-item" onclick="toggleSelect(this)">연성</span>
+                <span class="clickable-item" onclick="toggleSelect(this)">소비</span>
+                <span class="clickable-item" onclick="toggleSelect(this)">일상</span>
+                <span class="clickable-item" onclick="toggleSelect(this)">기타</span>
             </div>
-            <div class="input-wrapper pos-type-block">
-                <input type="text" class="transparent-input" placeholder="블락 / 블언블 / 언팔">
-                <div class="capture-text-mirror"></div>
+            <div class="clickable-box-group pos-type-block" data-type="multi">
+                <span class="clickable-item" onclick="toggleSelect(this)">블락</span>
+                <span class="clickable-item" onclick="toggleSelect(this)">블언블</span>
+                <span class="clickable-item" onclick="toggleSelect(this)">FUB FREE</span>
             </div>
+            
             <div class="input-wrapper pos-type-time">
                 <input type="text" class="transparent-input" placeholder="주요 접속 시간대">
                 <div class="capture-text-mirror"></div>
@@ -310,7 +339,36 @@
     </div>
 
     <script>
-        // 배경 등록 처리
+        // 티어 시퀀스 배열 데이터 구조화
+        const tiers = ["아이언", "브론즈", "실버", "골드", "플래티넘", "다이아몬드", "메테오라이트", "미스릴", "데미갓", "이터니티"];
+        let currentTierIdx = -1;
+
+        function rotateTier() {
+            currentTierIdx = (currentTierIdx + 1) % tiers.length;
+            const targetTier = tiers[currentTierIdx];
+            document.getElementById('tier-display').innerText = targetTier;
+            document.getElementById('tier-display').style.color = '#ffffff';
+        }
+
+        // 박스 클릭 시 토글 활성화 액션 로직
+        function toggleSelect(element) {
+            const group = element.closest('.clickable-box-group');
+            const type = group.getAttribute('data-type');
+
+            if (type === 'single') {
+                // 단일 선택형 그룹일 경우 다른 요소 해제
+                const items = group.querySelectorAll('.clickable-item');
+                items.forEach(item => {
+                    if(item !== element) item.classList.remove('active');
+                });
+                element.classList.toggle('active');
+            } else {
+                // 다중 선택형 그룹일 경우 독립적 토글 처리
+                element.classList.toggle('active');
+            }
+        }
+
+        // 배경 처리
         document.getElementById('bg-upload').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -322,7 +380,7 @@
             }
         });
 
-        // 캐릭터 이미지 프리뷰 크롭
+        // 슬롯 이미지 핸들러
         function previewImg(input, imgId) {
             const file = input.files[0];
             if (file) {
@@ -343,7 +401,7 @@
             });
         });
 
-        // 인풋창 데이터를 미러링 디브 노드에 동기화
+        // 싱크 동기화 연산 함수
         function syncInputsToMirrors() {
             document.querySelectorAll('.input-wrapper').forEach(wrapper => {
                 const input = wrapper.querySelector('.transparent-input');
@@ -352,19 +410,20 @@
                     mirror.textContent = input.value ? input.value : "";
                 }
             });
+            // 티어 전용 세팅 미러링 백업
+            const tierDisplay = document.getElementById('tier-display').innerText;
+            document.getElementById('tier-mirror').innerText = (tierDisplay === "티어 선택") ? "" : tierDisplay;
         }
 
-        // 고해상도 안정적 캡처 다운로드 함수
+        // 고해상도 안티앨리어싱 이미지 내보내기 함수
         function downloadImage() {
             const captureArea = document.getElementById('capture-area');
             const slots = document.querySelectorAll('.image-slot');
             
-            // 1. 값 복사 및 클래스 부여 (인풋 숨기고 텍스트 노드 노출)
             syncInputsToMirrors();
             slots.forEach(slot => slot.style.border = 'none');
             captureArea.classList.add('capturing');
 
-            // 2. 브라우저 렌더링 스레드 지연 확보 후 안정적 캡처 진행
             setTimeout(() => {
                 html2canvas(captureArea, {
                     scale: 2, 
@@ -372,7 +431,6 @@
                     backgroundColor: null,
                     logging: false
                 }).then(canvas => {
-                    // 3. 캡처 완료 후 스타일 복구
                     slots.forEach(slot => slot.style.border = '1px dashed rgba(255, 255, 255, 0.25)');
                     captureArea.classList.remove('capturing');
 
