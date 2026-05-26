@@ -83,7 +83,9 @@
             overflow: hidden;
         }
 
-        /* 이미지 슬롯 스타일 */
+        /* =========================================
+           [수정] 원본 프레임 마스크에 맞춘 이미지 슬롯 좌표
+           ========================================= */
         .image-slot {
             position: absolute;
             background-color: rgba(0, 0, 0, 0.4);
@@ -105,6 +107,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            text-align: center;
         }
         .slot-overlay span {
             color: #ff9800; font-size: 11px; font-weight: 700;
@@ -115,12 +118,12 @@
         .hide-input { display: none; }
         .center-circle { border-radius: 50%; }
 
-        /* 캐릭터 슬롯 좌표 */
-        .main-char-1 { top: 22.5%; left: 5.5%; width: 14.5%; height: 33.5%; border-radius: 4px; }
-        .main-char-2 { top: 22.5%; left: 22.5%; width: 14.5%; height: 33.5%; border-radius: 4px; }
-        .profile-char { top: 24.8%; left: 40.5%; width: 19.2%; height: 34.2%; }
-        .favorite-char-1 { top: 62%; left: 63.5%; width: 14.5%; height: 33.5%; border-radius: 4px; }
-        .favorite-char-2 { top: 62%; left: 80.5%; width: 14.5%; height: 33.5%; border-radius: 4px; }
+        /* 배경 이미지 템플릿 맞춤 픽셀 매핑 */
+        .main-char-1 { top: 228px; left: 46px; width: 100px; height: 135px; border-radius: 4px; }
+        .main-char-2 { top: 228px; left: 153px; width: 100px; height: 135px; border-radius: 4px; }
+        .profile-circle { top: 125px; left: 301px; width: 198px; height: 198px; }
+        .favorite-char-1 { top: 271px; left: 547px; width: 100px; height: 138px; border-radius: 4px; }
+        .favorite-char-2 { top: 271px; left: 656px; width: 100px; height: 138px; border-radius: 4px; }
 
         /* 입력을 위한 공통 래퍼 */
         .input-wrapper {
@@ -137,7 +140,7 @@
             border-color: rgba(255, 255, 255, 0.2);
         }
 
-        /* 인풋 텍스트 및 외곽선 기본 스킨 */
+        /* 텍스트 인풋 스타일 */
         .transparent-input {
             width: 100%;
             height: 100%;
@@ -147,7 +150,7 @@
             font-family: 'Paperlogy', sans-serif;
             font-weight: 700;
             font-size: 13.5px;
-            padding: 4px 6px;
+            padding: 2px 6px;
             box-sizing: border-box;
             color: #ffffff;
             text-shadow: -1.5px -1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px 1.5px 0 #000, 0px 2px 4px rgba(0,0,0,1);
@@ -162,10 +165,10 @@
             text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
             font-weight: 700; 
             font-size: 11px; 
-            opacity: 0.8;
+            opacity: 0.7;
         }
 
-        /* [개선] 티어 선택 드롭다운 UI 정의 스타일 */
+        /* 티어 선택 드롭다운 커스텀 UI */
         .tier-select-dropdown {
             width: 100%;
             height: 100%;
@@ -175,8 +178,8 @@
             color: #ff9800;
             font-family: 'Paperlogy', sans-serif;
             font-weight: 700;
-            font-size: 12.5px;
-            padding: 2px 6px;
+            font-size: 12px;
+            padding: 0 4px;
             cursor: pointer;
             outline: none;
             box-sizing: border-box;
@@ -186,17 +189,16 @@
             background: #171821;
             color: #ffffff;
             font-weight: 600;
-            text-shadow: none;
         }
 
-        /* 캡처 백업 렌더 디브 */
+        /* 내보내기용 미러 레이어 */
         .capture-text-mirror {
             display: none;
             width: 100%;
             font-family: 'Paperlogy', sans-serif;
             font-weight: 700;
             font-size: 13.5px;
-            padding: 4px 6px;
+            padding: 2px 6px;
             white-space: pre-wrap;
             word-break: break-all;
             box-sizing: border-box;
@@ -208,75 +210,76 @@
         .capturing .tier-select-dropdown { display: none !important; }
         .capturing .capture-text-mirror { display: block !important; }
 
-        /* 토글 선택지 영역 인게임 커스텀 배너 스타일 */
+        /* 토글 버튼 선택지 UI 스타일 */
         .clickable-box-group {
             position: absolute;
             display: flex;
-            gap: 5px;
+            gap: 4px;
             align-items: center;
             box-sizing: border-box;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 2px;
-            border-radius: 50px;
-            border: 1px dashed rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 4px;
+            border-radius: 6px;
+            border: 1px dashed rgba(255, 152, 0, 0.2);
         }
         .clickable-item {
             font-family: 'Paperlogy', sans-serif;
             font-weight: 700;
             font-size: 11px;
-            color: rgba(255, 255, 255, 0.6);
+            color: rgba(255, 255, 255, 0.5);
             cursor: pointer;
-            padding: 3px 8px;
-            border-radius: 50px;
-            transition: all 0.15s ease-in-out;
+            padding: 2px 5px;
+            border-radius: 4px;
+            transition: all 0.1s ease;
             user-select: none;
             text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-            border: 1px solid transparent;
         }
         .clickable-item:hover {
             color: #fff;
             background-color: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.2);
         }
         .clickable-item.active {
             color: #000000;
             background-color: #ff9800;
             font-weight: 800;
             text-shadow: none;
-            box-shadow: 0 2px 6px rgba(255, 152, 0, 0.4);
-            border-color: #ffb74d;
+            box-shadow: 0 1px 4px rgba(255, 152, 0, 0.4);
         }
         
-        .capturing .clickable-box-group { background: transparent !important; border: none !important; }
+        .capturing .clickable-box-group { background: transparent !important; border: none !important; padding: 0 !important; }
         .capturing .clickable-item { display: none !important; }
         .capturing .clickable-item.active { 
             display: block !important; 
             background-color: transparent !important; 
             color: #ffffff !important;
             text-shadow: -1.5px -1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px 1.5px 0 #000 !important;
-            padding: 2px 0; 
+            padding: 0; 
         }
 
-        /* 절대 좌표 바인딩 데이터 레이어 */
-        .pos-ingame-mode { top: 67.8%; left: 13.5%; }
-        .pos-ingame-name { top: 74.5%; left: 13.5%; width: 16.0%; }
-        .pos-ingame-discord { top: 81.0%; left: 13.5%; }
+        /* =========================================
+           [수정] 원본 폼 구조 일치를 위한 절대 좌표값 보정
+           ========================================= */
         
-        /* 티어 컨테이너 레이아웃 고정 */
-        .pos-ingame-tier { top: 87.5%; left: 13.5%; width: 16.0%; height: 26px; }
+        /* [왼쪽 하단] 인게임 컴포넌트 구역 */
+        .pos-ingame-mode { top: 304px; left: 77px; }       /* 모드: 솔로/듀오/스쿼드/코발트 */
+        .pos-ingame-name { top: 334px; left: 77px; width: 145px; height: 24px; } /* 이름 */
+        .pos-ingame-discord { top: 362px; left: 77px; }   /* 디코: 듣기/말하기/전부/사용X */
+        .pos-ingame-tier { top: 391px; left: 77px; width: 110px; height: 22px; } /* 티어 드롭다운 */
 
-        .pos-center-name { top: 22.0%; left: 43.0%; width: 14.0%; justify-content: center; }
-        .pos-center-name .transparent-input, .pos-center-name .capture-text-mirror { text-align: center; font-size: 14.5px; }
+        /* [중앙] 상단 트위터 ID 및 중앙 성별/나이, 하단 소개글 구역 */
+        .pos-center-name { top: 231px; left: 335px; width: 130px; height: 26px; justify-content: center; } /* 중앙 트위터 ID */
+        .pos-center-name .transparent-input, .pos-center-name .capture-text-mirror { text-align: center; }
         
-        .pos-gender-select { top: 61.4%; left: 46.5%; }
-        .pos-age-select { top: 64.7%; left: 46.5%; }
+        .pos-gender-select { top: 279px; left: 422px; }   /* 성별: 여/남/기타 */
+        .pos-age-select { top: 308px; left: 422px; }      /* 나이: 성인/청소년/기타 */
         
-        .pos-free-text { top: 79.5%; left: 37.5%; width: 25.0%; height: 13.5%; align-items: flex-start; }
-        .pos-free-text .transparent-input, .pos-free-text .capture-text-mirror { font-weight: 600; font-size: 12.5px; text-align: left; resize: none; }
+        .pos-free-text { top: 358px; left: 295px; width: 220px; height: 64px; align-items: flex-start; } /* 하단 소개글 상자 */
+        .pos-free-text .transparent-input, .pos-free-text .capture-text-mirror { font-weight: 600; font-size: 12px; text-align: left; resize: none; }
 
-        .pos-type-tweet { top: 28.0%; left: 76.5%; }
-        .pos-type-block { top: 35.0%; left: 76.5%; }
-        .pos-type-time { top: 42.0%; left: 76.5%; width: 18.0%; }
+        /* [우측 상단] 성향 구역 */
+        .pos-type-tweet { top: 120px; left: 585px; }       /* 트윗: 연성/소비/흔적/일상 */
+        .pos-type-block { top: 150px; left: 585px; }       /* 이별: 블랙/블언블/언팔 */
+        .pos-type-time { top: 180px; left: 585px; width: 150px; height: 24px; } /* 시간 입력창 */
     </style>
 </head>
 <body>
@@ -312,7 +315,7 @@
                 <div class="slot-overlay"><span>주캐릭터 2</span></div>
                 <input type="file" id="upload-main-2" accept="image/*" class="hide-input" onchange="previewImg(this, 'img-main-2')">
             </div>
-            <div class="image-slot profile-char center-circle">
+            <div class="image-slot profile-circle center-circle">
                 <img id="img-profile" src="#" alt="프로필">
                 <div class="slot-overlay"><span style="border-radius: 50%;">메인 프로필</span></div>
                 <input type="file" id="upload-profile" accept="image/*" class="hide-input" onchange="previewImg(this, 'img-profile')">
@@ -329,21 +332,21 @@
             </div>
 
             <div class="clickable-box-group pos-ingame-mode" data-type="single">
-                <span class="clickable-item" onclick="toggleSelect(this)">일반</span>
-                <span class="clickable-item" onclick="toggleSelect(this)">랭크</span>
+                <span class="clickable-item" onclick="toggleSelect(this)">솔로</span>
+                <span class="clickable-item" onclick="toggleSelect(this)">듀오</span>
+                <span class="clickable-item" onclick="toggleSelect(this)">스쿼드</span>
                 <span class="clickable-item" onclick="toggleSelect(this)">코발트</span>
-                <span class="clickable-item" onclick="toggleSelect(this)">내전</span>
             </div>
 
             <div class="input-wrapper pos-ingame-name">
-                <input type="text" class="transparent-input" placeholder="인게임 닉네임 입력">
+                <input type="text" class="transparent-input" placeholder="닉네임 입력">
                 <div class="capture-text-mirror"></div>
             </div>
 
             <div class="clickable-box-group pos-ingame-discord" data-type="single">
                 <span class="clickable-item" onclick="toggleSelect(this)">듣기</span>
                 <span class="clickable-item" onclick="toggleSelect(this)">말하기</span>
-                <span class="clickable-item" onclick="toggleSelect(this)">전부O</span>
+                <span class="clickable-item" onclick="toggleSelect(this)">전부</span>
                 <span class="clickable-item" onclick="toggleSelect(this)">사용X</span>
             </div>
 
@@ -370,35 +373,35 @@
             </div>
 
             <div class="clickable-box-group pos-gender-select" data-type="single">
-                <span class="clickable-item" onclick="toggleSelect(this)">여성</span>
-                <span class="clickable-item" onclick="toggleSelect(this)">남성</span>
-                <span class="clickable-item" onclick="toggleSelect(this)">비공개</span>
+                <span class="clickable-item" onclick="toggleSelect(this)">여</span>
+                <span class="clickable-item" onclick="toggleSelect(this)">남</span>
+                <span class="clickable-item" onclick="toggleSelect(this)">기타</span>
             </div>
             <div class="clickable-box-group pos-age-select" data-type="single">
                 <span class="clickable-item" onclick="toggleSelect(this)">성인</span>
                 <span class="clickable-item" onclick="toggleSelect(this)">청소년</span>
-                <span class="clickable-item" onclick="toggleSelect(this)">비공개</span>
+                <span class="clickable-item" onclick="toggleSelect(this)">기타</span>
             </div>
 
             <div class="input-wrapper pos-free-text">
-                <textarea class="transparent-input" placeholder="여기에 자유로운 소개글이나 작업 성향 한마디를 적어주세요."></textarea>
+                <textarea class="transparent-input" placeholder="소개글이나 성향을 자유롭게 입력하세요."></textarea>
                 <div class="capture-text-mirror"></div>
             </div>
 
             <div class="clickable-box-group pos-type-tweet" data-type="multi">
                 <span class="clickable-item" onclick="toggleSelect(this)">연성</span>
                 <span class="clickable-item" onclick="toggleSelect(this)">소비</span>
+                <span class="clickable-item" onclick="toggleSelect(this)">흔적</span>
                 <span class="clickable-item" onclick="toggleSelect(this)">일상</span>
-                <span class="clickable-item" onclick="toggleSelect(this)">기타</span>
             </div>
             <div class="clickable-box-group pos-type-block" data-type="multi">
                 <span class="clickable-item" onclick="toggleSelect(this)">블락</span>
                 <span class="clickable-item" onclick="toggleSelect(this)">블언블</span>
-                <span class="clickable-item" onclick="toggleSelect(this)">FUB FREE</span>
+                <span class="clickable-item" onclick="toggleSelect(this)">언팔</span>
             </div>
             
             <div class="input-wrapper pos-type-time">
-                <input type="text" class="transparent-input" placeholder="주요 접속 시간대">
+                <input type="text" class="transparent-input" placeholder="활동 시간대 입력">
                 <div class="capture-text-mirror"></div>
             </div>
 
@@ -421,7 +424,6 @@
             }
         }
 
-        // 배경 처리 비동기 인스턴스 스트림
         document.getElementById('bg-upload').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -433,7 +435,6 @@
             }
         });
 
-        // 슬롯 이미지 핸들러 크롭 함수
         function previewImg(input, imgId) {
             const file = input.files[0];
             if (file) {
@@ -454,7 +455,6 @@
             });
         });
 
-        // 내보내기용 동기화 루틴 구조화
         function syncInputsToMirrors() {
             document.querySelectorAll('.input-wrapper').forEach(wrapper => {
                 const input = wrapper.querySelector('.transparent-input');
@@ -464,13 +464,11 @@
                 }
             });
             
-            // 드롭다운 밸류값 미러링 처리
             const dropdown = document.getElementById('tier-dropdown');
             const tierMirror = document.getElementById('tier-mirror');
             tierMirror.textContent = dropdown.value ? dropdown.value : "";
         }
 
-        // 캡처 내보내기 함수
         function downloadImage() {
             const captureArea = document.getElementById('capture-area');
             const slots = document.querySelectorAll('.image-slot');
