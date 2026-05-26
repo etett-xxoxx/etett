@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ER:BS Profile Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        @import url('https://fastly.jsdelivr.net/gh/projectnoonnu/2403-2@1.0/Paperlogy-All.woff2');
+
+        body {
+            font-family: 'Paperlogy', sans-serif;
+            background: linear-gradient(135deg, #121216 0%, #1a1a24 100%);
+            color: #e2e4e9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        header { text-align: center; margin-bottom: 30px; }
+        h1 {
+            font-size: 28px;
+            font-weight: 800;
+            margin: 0 0 8px 0;
+            background: linear-gradient(90deg, #ff9800, #ff5722);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        header p { font-size: 14px; color: #989aa6; margin: 0; }
+
+        .control-panel {
+            background: rgba(34, 34, 46, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            padding: 12px 24px;
+            border-radius: 14px;
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .control-btn {
+            font-family: 'Paperlogy', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .bg-btn { background: #2f3142; color: #e2e4e9; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .bg-btn:hover { background: #3d3f54; }
+        .download-btn { background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%); color: white; }
+        .download-btn:hover { background: linear-gradient(135deg, #ffa726 0%, #fb8c00 100%); }
+
+        .canvas-container {
+            position: relative;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        #capture-area {
+            position: relative;
+            width: 800px;
+            height: 450px;
+            background-image: url('background.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: #1a1a24;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* 캐릭터 이미지 슬롯 */
+        .image-slot {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            cursor: pointer;
+            border: 1px dashed rgba(255, 255, 255, 0.25);
+            box-sizing: border-box;
+        }
+        .image-slot img { width: 100%; height: 100%; object-fit: cover; display: none; }
+        .slot-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .image-slot:hover .slot-overlay { opacity: 1; }
+        .slot-overlay span {
+            color: #fff; font-size: 11px; font-weight: 600;
+            background: rgba(255, 152, 0, 0.85); padding: 4px 8px; border-radius: 4px;
+        }
+
+        .hide-input { display: none; }
+        .center-circle { border-radius: 50%; }
+
+        .main-char-1 { top: 22.5%; left: 5.5%; width: 14.5%; height: 33.5%; border-radius: 4px; }
+        .main-char-2 { top: 22.5%; left: 22.5%; width: 14.5%; height: 33.5%; border-radius: 4px; }
+        .profile-char { top: 24.8%; left: 40.5%; width: 19.2%; height: 34.2%; }
+        .favorite-char-1 { top: 62%; left: 63.5%; width: 14.5%; height: 33.5%; border-radius: 4px; }
+        .favorite-char-2 { top: 62%; left: 80.5%; width: 14.5%; height: 33.5%; border-radius: 4px; }
+
+        /* =========================================
+           인풋 래퍼 및 이중 구조 스펙 (버그 수정 핵심)
+           ========================================= */
+        .input-wrapper {
+            position: absolute;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+        }
+
+        /* 실제 타이핑하는 인풋창 */
+        .transparent-input {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #1a1b20;
+            font-family: 'Paperlogy', sans-serif;
+            font-weight: 600;
+            font-size: 13.5px;
+            padding: 2px 4px;
+            box-sizing: border-box;
+        }
+        .transparent-input:focus {
+            background-color: rgba(255, 152, 0, 0.1);
+            border-radius: 4px;
+        }
+        .transparent-input::placeholder { color: rgba(0, 0, 0, 0.35); font-weight: 400; font-size: 12px; }
+
+        /* 캡처할 때 렌더링될 실제 텍스트 미러링 디브 */
+        .capture-text-mirror {
+            display: none; /* 평소엔 숨김 */
+            width: 100%;
+            color: #1a1b20;
+            font-family: 'Paperlogy', sans-serif;
+            font-weight: 600;
+            font-size: 13.5px;
+            padding: 2px 4px;
+            white-space: pre-wrap; /* textarea 줄바꿈 보존 */
+            word-break: break-all;
+            box-sizing: border-box;
+        }
+
+        /* 다운로드 중일 때 텍스트 미러링 활성화 클래스 */
+        .capturing .transparent-input { display: none !important; }
+        .capturing .capture-text-mirror { display: block !important; }
+
+        /* 절대 좌표 정의 (래퍼 기준) */
+        .pos-ingame-mode { top: 68.2%; left: 13.5%; width: 15.5%; }
+        .pos-ingame-name { top: 74.8%; left: 13.5%; width: 15.5%; font-weight: 700; }
+        .pos-ingame-name .transparent-input, .pos-ingame-name .capture-text-mirror { color: #000; font-weight: 700; }
+        .pos-ingame-discord { top: 81.3%; left: 13.5%; width: 15.5%; }
+        .pos-ingame-tier { top: 88.0%; left: 13.5%; width: 15.5%; font-weight: 700; }
+
+        .pos-center-name { top: 22.0%; left: 43.0%; width: 14.0%; justify-content: center; }
+        .pos-center-name .transparent-input { text-align: center; color: #ffffff; font-weight: 700; font-size: 14.5px; }
+        .pos-center-name .capture-text-mirror { text-align: center; color: #ffffff; font-weight: 700; font-size: 14.5px; }
+        .pos-center-name .transparent-input::placeholder { color: rgba(255,255,255,0.5); }
+        
+        .pos-gender-age { top: 61.8%; left: 45.0%; width: 13.0%; justify-content: center; }
+        .pos-gender-age .transparent-input, .pos-gender-age .capture-text-mirror { text-align: center; }
+        
+        .pos-free-text { top: 79.5%; left: 37.5%; width: 25.0%; height: 13.5%; align-items: flex-start; }
+        .pos-free-text .transparent-input, .pos-free-text .capture-text-mirror { font-weight: 500; font-size: 12.5px; text-align: left; }
+
+        .pos-type-tweet { top: 28.3%; left: 76.5%; width: 18.0%; }
+        .pos-type-block { top: 35.3%; left: 76.5%; width: 18.0%; }
+        .pos-type-time { top: 42.3%; left: 76.5%; width: 18.0%; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>ETERNAL RETURN PROFILE GENERATOR</h1>
+        <p>원하는 테마 배경과 캐릭터 이미지를 올려 나만의 트친소 카드를 완성해 보세요.</p>
+    </header>
+    
+    <div class="control-panel">
+        <label for="bg-upload" class="control-btn bg-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            배경 폼 등록
+        </label>
+        <input type="file" id="bg-upload" accept="image/*" class="hide-input">
+        
+        <button class="control-btn download-btn" onclick="downloadImage()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            이미지 다운로드
+        </button>
+    </div>
+
+    <div class="canvas-container">
+        <div id="capture-area">
+            
+            <div class="image-slot main-char-1">
+                <img id="img-main-1" src="#" alt="주캐릭터 1">
+                <div class="slot-overlay"><span>주캐릭터 1</span></div>
+                <input type="file" id="upload-main-1" accept="image/*" class="hide-input" onchange="previewImg(this, 'img-main-1')">
+            </div>
+            <div class="image-slot main-char-2">
+                <img id="img-main-2" src="#" alt="주캐릭터 2">
+                <div class="slot-overlay"><span>주캐릭터 2</span></div>
+                <input type="file" id="upload-main-2" accept="image/*" class="hide-input" onchange="previewImg(this, 'img-main-2')">
+            </div>
+            <div class="image-slot profile-char center-circle">
+                <img id="img-profile" src="#" alt="프로필">
+                <div class="slot-overlay"><span style="border-radius: 50%;">메인 프로필</span></div>
+                <input type="file" id="upload-profile" accept="image/*" class="hide-input" onchange="previewImg(this, 'img-profile')">
+            </div>
+            <div class="image-slot favorite-char-1">
+                <img id="img-fav-1" src="#" alt="애정캐릭터 1">
+                <div class="slot-overlay"><span>애정캐릭터 1</span></div>
+                <input type="file" id="upload-fav-1" accept="image/*" class="hide-input" onchange="previewImg(this, 'img-fav-1')">
+            </div>
+            <div class="image-slot favorite-char-2">
+                <img id="img-fav-2" src="#" alt="애정캐릭터 2">
+                <div class="slot-overlay"><span>애정캐릭터 2</span></div>
+                <input type="file" id="upload-fav-2" accept="image/*" class="hide-input" onchange="previewImg(this, 'img-fav-2')">
+            </div>
+
+            <div class="input-wrapper pos-ingame-mode">
+                <input type="text" class="transparent-input" placeholder="일반 / 랭크 / 코발트 / 내전">
+                <div class="capture-text-mirror"></div>
+            </div>
+            <div class="input-wrapper pos-ingame-name">
+                <input type="text" class="transparent-input" placeholder="인게임 닉네임">
+                <div class="capture-text-mirror"></div>
+            </div>
+            <div class="input-wrapper pos-ingame-discord">
+                <input type="text" class="transparent-input" placeholder="듣기 / 말하기 / 전부 / 사용X">
+                <div class="capture-text-mirror"></div>
+            </div>
+            <div class="input-wrapper pos-ingame-tier">
+                <input type="text" class="transparent-input" placeholder="현재 티어">
+                <div class="capture-text-mirror"></div>
+            </div>
+
+            <div class="input-wrapper pos-center-name">
+                <input type="text" class="transparent-input" placeholder="트위터 닉네임">
+                <div class="capture-text-mirror"></div>
+            </div>
+            <div class="input-wrapper pos-gender-age">
+                <input type="text" class="transparent-input" placeholder="성별 / 나이">
+                <div class="capture-text-mirror"></div>
+            </div>
+            <div class="input-wrapper pos-free-text">
+                <textarea class="transparent-input" placeholder="소개글이나 작업 성향 등을 자유롭게 작성하세요."></textarea>
+                <div class="capture-text-mirror"></div>
+            </div>
+
+            <div class="input-wrapper pos-type-tweet">
+                <input type="text" class="transparent-input" placeholder="연성 / 소비 / 흔적 / 일상">
+                <div class="capture-text-mirror"></div>
+            </div>
+            <div class="input-wrapper pos-type-block">
+                <input type="text" class="transparent-input" placeholder="블락 / 블언블 / 언팔">
+                <div class="capture-text-mirror"></div>
+            </div>
+            <div class="input-wrapper pos-type-time">
+                <input type="text" class="transparent-input" placeholder="주요 접속 시간대">
+                <div class="capture-text-mirror"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // 배경 등록
+        document.getElementById('bg-upload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('capture-area').style.backgroundImage = `url('${event.target.result}')`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 캐릭터 크롭
+        function previewImg(input, imgId) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById(imgId);
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+                    input.closest('.image-slot').querySelector('.slot-overlay').style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        document.querySelectorAll('.image-slot').forEach(slot => {
+            slot.addEventListener('click', function() {
+                this.querySelector('input[type="file"]').click();
+            });
+        });
+
+        // [핵심] 다운로드 직전 값을 일반 div 노드로 미러링 동기화해주는 함수
+        function syncInputsToMirrors() {
+            document.querySelectorAll('.input-wrapper').forEach(wrapper => {
+                const input = wrapper.querySelector('.transparent-input');
+                const mirror = wrapper.querySelector('.capture-text-mirror');
+                if (input && mirror) {
+                    // 유저가 입력한 값이 있으면 그 값을 넣고, 없으면 공백 처리(placeholder 안 찍히게)
+                    mirror.textContent = input.value ? input.value : "";
+                }
+            });
+        }
+
+        function downloadImage() {
+            const captureArea = document.getElementById('capture-area');
+            const slots = document.querySelectorAll('.image-slot');
+            
+            // 1. 다운로드 직전 인풋 값을 미러 디브에 복사
+            syncInputsToMirrors();
+            
+            // 2. 가이드라인 숨기고 + 인풋창 감추고 미러 디브 켜기 (.capturing 클래스 부여)
+            slots.forEach(slot => slot.style.border = 'none');
+            captureArea.classList.add('capturing');
+
+            // 3. 브라우저가 화면을 리렌더링할 시간을 아주 잠깐 준 뒤 캡처 실행 (안전장치)
+            setTimeout(() => {
+                html2canvas(captureArea, {
+                    scale: 2, 
+                    useCORS: true,
+                    backgroundColor: null,
+                    logging: false
+                }).then(canvas => {
+                    // 4. 복구 작업
+                    slots.forEach(slot => slot.style.border = '1px dashed rgba(255, 255, 255, 0.25)');
+                    captureArea.classList.remove('capturing');
+
+                    const imageUrl = canvas.toDataURL('image/png');
+                    const link = document.createElement('a');
+                    link.href = imageUrl;
+                    link.download = 'eternal_return_card.png';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }).catch(err => {
+                    console.error("Render fail:", err);
+                    slots.forEach(slot => slot.style.border = '1px dashed rgba(255, 255, 255, 0.25)');
+                    captureArea.classList.remove('capturing');
+                });
+            }, 50);
+        }
+    </script>
+</body>
+</html>
