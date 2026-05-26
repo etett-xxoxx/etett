@@ -111,6 +111,7 @@
         .hide-input { display: none; }
         .center-circle { border-radius: 50%; }
 
+        /* 슬롯 좌표 설정 */
         .main-char-1 { top: 22.5%; left: 5.5%; width: 14.5%; height: 33.5%; border-radius: 4px; }
         .main-char-2 { top: 22.5%; left: 22.5%; width: 14.5%; height: 33.5%; border-radius: 4px; }
         .profile-char { top: 24.8%; left: 40.5%; width: 19.2%; height: 34.2%; }
@@ -118,7 +119,7 @@
         .favorite-char-2 { top: 62%; left: 80.5%; width: 14.5%; height: 33.5%; border-radius: 4px; }
 
         /* =========================================
-           인풋 래퍼 및 이중 구조 스펙 (버그 수정 핵심)
+           인풋 래퍼 및 가독성 최적화 스타일 (그림자 및 테두리 효과)
            ========================================= */
         .input-wrapper {
             position: absolute;
@@ -127,61 +128,86 @@
             align-items: center;
         }
 
-        /* 실제 타이핑하는 인풋창 */
+        /* 폰트 기본 서식 및 찐한 그림자/테두리(Text-stroke 대용) 효과 적용 */
         .transparent-input {
             width: 100%;
             height: 100%;
             background: transparent;
             border: none;
             outline: none;
-            color: #1a1b20;
             font-family: 'Paperlogy', sans-serif;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 13.5px;
             padding: 2px 4px;
             box-sizing: border-box;
+            color: #ffffff;
+            /* 글씨 겉에 얇고 선명한 검은색 외곽선 + 부드러운 그림자 조합으로 가독성 극대화 */
+            text-shadow: 
+                -1.5px -1.5px 0 #000,  
+                 1.5px -1.5px 0 #000,
+                -1.5px  1.5px 0 #000,
+                 1.5px  1.5px 0 #000,
+                 0px 2px 5px rgba(0, 0, 0, 0.9);
         }
         .transparent-input:focus {
-            background-color: rgba(255, 152, 0, 0.1);
+            background-color: rgba(255, 255, 255, 0.15);
             border-radius: 4px;
         }
-        .transparent-input::placeholder { color: rgba(0, 0, 0, 0.35); font-weight: 400; font-size: 12px; }
-
-        /* 캡처할 때 렌더링될 실제 텍스트 미러링 디브 */
-        .capture-text-mirror {
-            display: none; /* 평소엔 숨김 */
-            width: 100%;
-            color: #1a1b20;
-            font-family: 'Paperlogy', sans-serif;
-            font-weight: 600;
-            font-size: 13.5px;
-            padding: 2px 4px;
-            white-space: pre-wrap; /* textarea 줄바꿈 보존 */
-            word-break: break-all;
-            box-sizing: border-box;
+        .transparent-input::placeholder { 
+            color: rgba(255, 255, 255, 0.6); 
+            font-weight: 500; 
+            font-size: 12px; 
+            text-shadow: 0px 1px 3px rgba(0,0,0,0.8);
         }
 
-        /* 다운로드 중일 때 텍스트 미러링 활성화 클래스 */
+        /* 캡처용 미러링 디브에도 동일한 가독성 효과 부여 */
+        .capture-text-mirror {
+            display: none;
+            width: 100%;
+            font-family: 'Paperlogy', sans-serif;
+            font-weight: 700;
+            font-size: 13.5px;
+            padding: 2px 4px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            box-sizing: border-box;
+            color: #ffffff;
+            text-shadow: 
+                -1.5px -1.5px 0 #000,  
+                 1.5px -1.5px 0 #000,
+                -1.5px  1.5px 0 #000,
+                 1.5px  1.5px 0 #000,
+                 0px 2px 5px rgba(0, 0, 0, 0.9);
+        }
+
+        /* 다운로드 시 노드 스위칭 */
         .capturing .transparent-input { display: none !important; }
         .capturing .capture-text-mirror { display: block !important; }
 
-        /* 절대 좌표 정의 (래퍼 기준) */
+        /* 각 영역별 상세 위치 설정 */
         .pos-ingame-mode { top: 68.2%; left: 13.5%; width: 15.5%; }
-        .pos-ingame-name { top: 74.8%; left: 13.5%; width: 15.5%; font-weight: 700; }
-        .pos-ingame-name .transparent-input, .pos-ingame-name .capture-text-mirror { color: #000; font-weight: 700; }
+        .pos-ingame-name { top: 74.8%; left: 13.5%; width: 15.5%; }
         .pos-ingame-discord { top: 81.3%; left: 13.5%; width: 15.5%; }
-        .pos-ingame-tier { top: 88.0%; left: 13.5%; width: 15.5%; font-weight: 700; }
+        .pos-ingame-tier { top: 88.0%; left: 13.5%; width: 15.5%; }
 
+        /* 중앙 상단 닉네임 구역 */
         .pos-center-name { top: 22.0%; left: 43.0%; width: 14.0%; justify-content: center; }
-        .pos-center-name .transparent-input { text-align: center; color: #ffffff; font-weight: 700; font-size: 14.5px; }
-        .pos-center-name .capture-text-mirror { text-align: center; color: #ffffff; font-weight: 700; font-size: 14.5px; }
-        .pos-center-name .transparent-input::placeholder { color: rgba(255,255,255,0.5); }
+        .pos-center-name .transparent-input, .pos-center-name .capture-text-mirror { 
+            text-align: center; 
+            font-size: 15px; 
+        }
         
         .pos-gender-age { top: 61.8%; left: 45.0%; width: 13.0%; justify-content: center; }
         .pos-gender-age .transparent-input, .pos-gender-age .capture-text-mirror { text-align: center; }
         
+        /* 한마디/소개글 구역 (Textarea 세로 정렬 대응) */
         .pos-free-text { top: 79.5%; left: 37.5%; width: 25.0%; height: 13.5%; align-items: flex-start; }
-        .pos-free-text .transparent-input, .pos-free-text .capture-text-mirror { font-weight: 500; font-size: 12.5px; text-align: left; }
+        .pos-free-text .transparent-input, .pos-free-text .capture-text-mirror { 
+            font-weight: 600; 
+            font-size: 12.5px; 
+            text-align: left; 
+            resize: none;
+        }
 
         .pos-type-tweet { top: 28.3%; left: 76.5%; width: 18.0%; }
         .pos-type-block { top: 35.3%; left: 76.5%; width: 18.0%; }
@@ -284,7 +310,7 @@
     </div>
 
     <script>
-        // 배경 등록
+        // 배경 등록 처리
         document.getElementById('bg-upload').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -296,7 +322,7 @@
             }
         });
 
-        // 캐릭터 크롭
+        // 캐릭터 이미지 프리뷰 크롭
         function previewImg(input, imgId) {
             const file = input.files[0];
             if (file) {
@@ -317,30 +343,28 @@
             });
         });
 
-        // [핵심] 다운로드 직전 값을 일반 div 노드로 미러링 동기화해주는 함수
+        // 인풋창 데이터를 미러링 디브 노드에 동기화
         function syncInputsToMirrors() {
             document.querySelectorAll('.input-wrapper').forEach(wrapper => {
                 const input = wrapper.querySelector('.transparent-input');
                 const mirror = wrapper.querySelector('.capture-text-mirror');
                 if (input && mirror) {
-                    // 유저가 입력한 값이 있으면 그 값을 넣고, 없으면 공백 처리(placeholder 안 찍히게)
                     mirror.textContent = input.value ? input.value : "";
                 }
             });
         }
 
+        // 고해상도 안정적 캡처 다운로드 함수
         function downloadImage() {
             const captureArea = document.getElementById('capture-area');
             const slots = document.querySelectorAll('.image-slot');
             
-            // 1. 다운로드 직전 인풋 값을 미러 디브에 복사
+            // 1. 값 복사 및 클래스 부여 (인풋 숨기고 텍스트 노드 노출)
             syncInputsToMirrors();
-            
-            // 2. 가이드라인 숨기고 + 인풋창 감추고 미러 디브 켜기 (.capturing 클래스 부여)
             slots.forEach(slot => slot.style.border = 'none');
             captureArea.classList.add('capturing');
 
-            // 3. 브라우저가 화면을 리렌더링할 시간을 아주 잠깐 준 뒤 캡처 실행 (안전장치)
+            // 2. 브라우저 렌더링 스레드 지연 확보 후 안정적 캡처 진행
             setTimeout(() => {
                 html2canvas(captureArea, {
                     scale: 2, 
@@ -348,7 +372,7 @@
                     backgroundColor: null,
                     logging: false
                 }).then(canvas => {
-                    // 4. 복구 작업
+                    // 3. 캡처 완료 후 스타일 복구
                     slots.forEach(slot => slot.style.border = '1px dashed rgba(255, 255, 255, 0.25)');
                     captureArea.classList.remove('capturing');
 
@@ -364,7 +388,7 @@
                     slots.forEach(slot => slot.style.border = '1px dashed rgba(255, 255, 255, 0.25)');
                     captureArea.classList.remove('capturing');
                 });
-            }, 50);
+            }, 60);
         }
     </script>
 </body>
